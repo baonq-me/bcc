@@ -28,11 +28,28 @@ CLEANUP_N_PACKETS = 50     # cleanup every CLEANUP_N_PACKETS packets received
 MAX_URL_STRING_LEN = 8192  # max url string len (usually 8K)
 MAX_AGE_SECONDS = 30       # max age entry in bpf_sessions map
 
+import socket
+SERVER_HOSTNAME = socket.gethostname()
+MAILGUN_AUTH = "xxxxx"
+LIST_EMAIL = [
+    # type email here
+]
+def sendmail(to, subject, message):
+    url = "https://api.mailgun.net/v3/bao.com/messages"
+    print(subject)
+    print(message)
+    print("----")
+    payload = {
+        'from': 'Someone <mail@bao.com>',
+        'to': to,
+        'subject': subject,
+        'html': f"<html><body>{message}</body></html>".replace("\n", "<br/>")
+    }
 
-# print str until CR+LF
-def printUntilCRLF(s):
-    print(s.split(b'\r\n')[0].decode())
+    response = requests.request("POST", url, headers={'Authorization': 'Basic ' + MAILGUN_AUTH}, data=payload)
 
+    print(response.text)
+    
 
 # cleanup function
 def cleanup():
